@@ -1,0 +1,51 @@
+﻿@model Project.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<h1>Login</h1>
+
+<form asp-controller="Account" asp-action="Login" method="post">
+    <div style="color:red;" asp-validation-summary="ModelOnly"></div>
+    <span class="text-danger">
+        @Html.ValidationMessage("validmsg")
+    </span>
+    @*<div style="background-image:url('');"></div>*@
+    <table>
+        <tr>
+            <td><label asp-for="UserName"></label></td>
+            <td>
+                <input asp-for="UserName" />
+                <span asp-validation-for="UserName"></span>
+            </td>
+        </tr>
+        <tr>
+            <td><label asp-for="Password"></label></td>
+            <td>
+                <input asp-for="Password" />
+                <span asp-validation-for="Password"></span>
+            </td>
+        </tr>
+        <tr>
+            <td><label asp-for="RememberMe"></label></td>
+            <td>
+                <input asp-for="RememberMe" />
+                <span asp-validation-for="RememberMe"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Login" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+

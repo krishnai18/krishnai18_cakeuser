@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@model List<Project.ViewModels.ProductModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@*<div class="text-center">
+        <h1 class="display-4">@ViewBag.Message</h1>
+    </div>
+    <hr />
+    <h3>@ViewBag.RoleMessage</h3>
+    <div style="background-image: url('https://www.google.com/imgres?imgurl=https%3A%2F%2Fimagesvc.meredithcorp.io%2Fv3%2Fmm%2Fimage%3Furl%3Dhttps%253A%252F%252Fimg1.cookinglight.timeinc.net%252Fsites%252Fdefault%252Ffiles%252Fstyles%252Fmedium_2x%252Fpublic%252F1542062283%252Fchocolate-and-cream-layer-cake-1812-cover.jpg%253Fitok%253DrEWL7AIN&imgrefurl=https%3A%2F%2Fwww.cookinglight.com%2Frecipes%2Fchocolate-and-cream-layer-cake&tbnid=Srgz7QDxu3XD0M&vet=12ahUKEwjujdbuofvwAhWasksFHSlcA44QMygAegUIARDyAQ..i&docid=LS73GdQoPy0wMM&w=1200&h=900&q=cakes&ved=2ahUKEwjujdbuofvwAhWasksFHSlcA44QMygAegUIARDyAQ');"></div>*@
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<link href="~/css/site.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+    function AddToCart(item) {
+        
+        var itemId = $(item).attr('itemid');
+        var formData = new FormData();
+        formData.append('CakeId', itemId);
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            url: '/Home/ShoppingCart',
+            success: function (data) {
+                var res = JSON.parse(data);
+                if (res.Success) {                    
+                    $('#cartItem').text("Cart(" + res.Counter + ")");
+                }
+            },
+            error: function (err) {
+                alert('Error occurred while adding item to cart');
+            }
+        });
+    }
+</script>
+<h1>Index</h1>
+<div class="product">
+    @*<h2 class="text-center"></h2>*@
+    <div style="border-bottom: 1px solid #808080; overflow: hidden; display: block;">
+        <div class="cart">
+            @if (HttpContextAccessor.HttpContext.Session.GetInt32("CartCounter") == null)
+            {
+                @Html.ActionLink(linkText: "Cart", actionName: "ShoppingCart", routeValues: "Home", htmlAttributes: new { id = "cartItem" })
+            }
+            else
+            {
+                @Html.ActionLink(linkText: "Cart(" + HttpContextAccessor.HttpContext.Session.GetInt32("CartCounter") + ")", actionName: "ShoppingCart", routeValues: "Home", htmlAttributes: new { id = "cartItem" })
+            }
+
+        </div>
+    </div>
+
+    @foreach (var item in Model)
+    {
+        <div class="product-item">
+            <h3> @item.CakeName</h3>
+            <div class="image">
+                <img src="@Url.Content(item.ImageUrl)" title="abc" width="200px" height="200px" />
+            </div>
+            <div class="price-button">
+                <div class="price">@item.CakePrice.ToString(format: "#,##0.00 Rs")</div>
+                <div class="button">
+                    <input type="button" value="Add to Cart" id="btnCart" class="button" itemid="@item.CakeId" onclick="AddToCart(this)" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@*<div class="container">
+        <div class="col-md-4">
+            <table id="productTable"></table>
+        </div>
+        <table>
+            <tr>
+                <td colspan="2" style="text-align:center">
+                    <input type="button"
+                           value="Get Product" onclick="GetProduct();" />
+                </td>
+            </tr>
+        </table>
+    </div>*@
